@@ -19,7 +19,7 @@ def lprun(fn_to_run, *args, fn_to_monitor=None, **kwargs):
         authenticated_user = authenticate(username=unique_username, password='temporary_password')
         
         # Create a request object
-        request = RequestFactory().get('/frontend/kpi_combine/2/')
+        request = RequestFactory().get('/dummy/')
         request.user = authenticated_user # type: ignore #
         
         # Prepare the arguments
