@@ -1,4 +1,5 @@
 import uuid
+import inspect
 from django.test import RequestFactory
 from django.contrib.auth import authenticate
 from django.contrib.auth import login
@@ -15,15 +16,18 @@ def lprun(fn_to_run, *args, fn_to_monitor=None, **kwargs):
     user = User.objects.create_user(username=unique_username, password='temporary_password')
     
     try:
-        # Authenticate the user
-        authenticated_user = authenticate(username=unique_username, password='temporary_password')
-        
-        # Create a request object
-        request = RequestFactory().get('/dummy/')
-        request.user = authenticated_user # type: ignore #
-        
-        # Prepare the arguments
-        args = (request, *args)
+        sig = inspect.signature(fn_to_run)
+        first_param = next(iter(sig.parameters.values()))
+        if first_param.name == 'request':
+            # Authenticate the user
+            authenticated_user = authenticate(username=unique_username, password='temporary_password')
+            
+            # Create a request object
+            request = RequestFactory().get('/dummy/')
+            request.user = authenticated_user # type: ignore #
+            
+            # Prepare the arguments
+            args = (request, *args)
         
         # Access the original function
         fn_to_monitor = fn_to_monitor.__wrapped__ if hasattr(fn_to_monitor, '__wrapped__') else fn_to_monitor
