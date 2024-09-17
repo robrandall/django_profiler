@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from line_profiler import LineProfiler
     
 
-def lprun(fn_to_run, fn_to_monitor=None, *args, **kwargs):
+def lprun(fn_to_run, *args, fn_to_monitor=None, **kwargs):
     if fn_to_monitor is None:
         fn_to_monitor = fn_to_run
 
